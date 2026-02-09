@@ -1,0 +1,91 @@
+#include <TinyGPS++.h>
+#include <SoftwareSerial.h>
+
+// GPS Pins
+SoftwareSerial gpsSerial(4, 3);   // RX, TX
+TinyGPSPlus gps;
+
+// GSM Pins
+SoftwareSerial gsmSerial(7, 8);   // RX, TX
+
+// Buzzer Pin
+#define BUZZER 9
+
+// Safe Zone Coordinates (Change as needed)
+double safeLat = 18.5204;   // Example latitude
+double safeLon = 73.8567;   // Example longitude
+
+// Allowed distance in meters
+double safeRadius = 100.0;
+
+void setup() {
+  Serial.begin(9600);
+  gpsSerial.begin(9600);
+  gsmSerial.begin(9600);
+
+  pinMode(BUZZER, OUTPUT);
+  digitalWrite(BUZZER, LOW);
+
+  Serial.println("Alzheimer Geofencing System Started");
+}
+
+void loop() {
+  while (gpsSerial.available()) {
+    gps.encode(gpsSerial.read());
+  }
+
+  if (gps.location.isUpdated()) {
+    double currentLat = gps.location.lat();
+    double currentLon = gps.location.lng();
+
+    Serial.print("Latitude: ");
+    Serial.println(currentLat);
+    Serial.print("Longitude: ");
+    Serial.println(currentLon);
+
+    double distance = calculateDistance(
+      currentLat, currentLon, safeLat, safeLon
+    );
+
+    Serial.print("Distance from Safe Zone: ");
+    Serial.println(distance);
+
+    if (distance > safeRadius) {
+      alertCaregiver(currentLat, currentLon);
+      digitalWrite(BUZZER, HIGH);
+      delay(5000);
+      digitalWrite(BUZZER, LOW);
+    }
+  }
+}
+
+// Distance calculation using Haversine formula
+double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  double R = 6371000; // Earth radius in meters
+  double dLat = radians(lat2 - lat1);
+  double dLon = radians(lon2 - lon1);
+
+  double a = sin(dLat / 2) * sin(dLat / 2) +
+             cos(radians(lat1)) * cos(radians(lat2)) *
+             sin(dLon / 2) * sin(dLon / 2);
+
+  double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+  return R * c;
+}
+
+void alertCaregiver(double lat, double lon) {
+  gsmSerial.println("AT+CMGF=1");
+  delay(1000);
+
+  gsmSerial.println("AT+CMGS=\"+91XXXXXXXXXX\""); // Replace number
+  delay(1000);
+
+  gsmSerial.print("Alert! Patient left safe zone.\nLocation: ");
+  gsmSerial.print("Lat: ");
+  gsmSerial.print(lat, 6);
+  gsmSerial.print(" Lon: ");
+  gsmSerial.print(lon, 6);
+  delay(1000);
+
+  gsmSerial.write(26); // Ctrl+Z to send SMS
+}
