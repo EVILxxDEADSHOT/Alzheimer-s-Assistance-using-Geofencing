@@ -1,11 +1,38 @@
-Alzheimer’s Assistance System Using Geofencing
+# 🧠 Alzheimer’s Assistance Using Geofencing
 
-This project is designed to help monitor Alzheimer’s patients who may wander away due to memory loss. The system tracks the patient’s location using a GPS module and compares it with a predefined safe area.
+A safety-focused **embedded system** designed to monitor the **real-time location of Alzheimer’s patients** and alert caregivers when the patient moves **outside a predefined safe zone**.
 
-An Arduino Nano processes the GPS data. If the patient moves outside the safe zone, a buzzer is activated and an alert SMS is sent to the caregiver using a GSM module. This allows the caregiver to take quick action and locate the patient.
+The system uses **GPS-based geofencing with Arduino** and sends **instant SMS alerts via a GSM module**, helping prevent wandering and enabling quick assistance.
 
-The system is simple, low-cost, and suitable for real-life safety applications. It helps improve patient security and reduces the risk of patients getting lost.
+---
 
-Components used include Arduino Nano, NEO-6M GPS module, SIM800L GSM module, buzzer, jumper wires, power supply, and Arduino IDE.
+## 🚀 Key Highlights
+- 📍 Real-time GPS location tracking  
+- 🚧 Geofence-based safety monitoring  
+- 📩 SMS alert to caregiver via GSM  
+- 🔔 Buzzer alert for nearby warning  
 
-This project demonstrates how embedded systems can be used effectively in healthcare and safety monitoring applications.
+---
+
+## 🛠️ Tech Stack
+- Arduino Nano  
+- NEO-6M GPS Module  
+- SIM800L GSM Module  
+- Arduino IDE  
+
+---
+
+## 🔍 How It Works
+1. GPS module tracks patient location  
+2. Arduino calculates distance from safe zone  
+3. Boundary crossed → alert triggered  
+4. SMS sent and buzzer activated  
+
+---
+
+## ⚠️ Disclaimer
+This project is intended **for educational and academic purposes only** and is not a medical-grade monitoring system.
+
+---
+
+✨ *Embedded Systems for Safer Healthcare*
